@@ -67,19 +67,7 @@ export default Share = ({ visible, onClose }) => {
             </TouchableOpacity>
           </View>
           <Text style={styles.modalText}>Or enter recipient email address:</Text>
-          <TextInput
-            style={styles.emailInput}
-            placeholder="Email Address"
-            placeholderTextColor="#C2C2C2"
-            onChangeText={(text) => setMessage(text)}
-            value={message}
-          />
-          <TouchableOpacity style={styles.sendButton} onPress={onClose}>
-            <Text style={styles.sendButtonText}>Send</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
+
         </View>
       </View>
     </Modal>

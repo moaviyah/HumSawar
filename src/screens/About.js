@@ -8,15 +8,15 @@ const AboutScreen = () => {
         <Text style={styles.logo}>Hum Sawar</Text>
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.heading}>About MyApp</Text>
+        <Text style={styles.heading}>About</Text>
         <Text style={styles.text}>
-          MyApp is a platform that connects drivers with riders. With our
+          HumSawar is a platform that connects drivers with riders. With our
           easy-to-use app, you can quickly request a ride, and a nearby driver
           will be on their way to pick you up in minutes.
         </Text>
         <Text style={styles.text}>
           Our goal is to provide a safe, reliable, and affordable transportation
-          solution for people all over the world.
+          solution for people all over the Country.
         </Text>
       </View>
       <TouchableOpacity style={styles.button}>

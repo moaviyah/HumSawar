@@ -263,6 +263,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { primary } from '../theme/Theme';
 
 const HistoryScreen = () => {
   const [selectedTab, setSelectedTab] = useState('given');
@@ -332,8 +333,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   activeTabButton: {
-    backgroundColor: '#00c896',
-    borderColor: '#00c896',
+    backgroundColor: primary,
   },
   tabButtonText: {
     color: '#444',

@@ -23,6 +23,7 @@ import { authentication, db, } from './src/config/firebase';
 import SearchRide from './src/components/SearchRide';
 import Messages from './src/message/Messages';
 import Chat from './src/message/Chat';
+import PostedRides from './src/screens/PostedRides';
 
     // useEffect(() => {     
     // const id = authentication.currentUser.uid;
@@ -70,9 +71,9 @@ export default function App() {
           isSignedIn
             ?
             <Stack.Navigator>
-              <Stack.Screen name='Dashboard' component={Dashboard} options={{ headerShown: false}}/>
+              <Stack.Screen name='Dashboard' component={Dashboard} options={{ headerShown: false, headerLeftLabelVisible:true}}/>
               <Stack.Screen name='Basic' component={Basic} options={{ headerShown: false,}} />
-              <Stack.Screen name='Home' component={Home} options={{ headerShown: false,}} />
+              <Stack.Screen name='Home' component={Home} options={{ headerShown: false, headerLeftLabelVisible:false}} />
               <Stack.Screen name='Posts' component={Posts} options={{ headerShown: false,}} />
               <Stack.Screen name='Ride' component={Rides} options={{ headerShown: false,}} />
               <Stack.Screen name='Search' component={SearchRide} options={{headerLeftLabelVisible:false, headerBackAccessibilityLabel:false, headerStyle:({backgroundColor: 'transparent',})}} />
@@ -84,6 +85,7 @@ export default function App() {
               <Stack.Screen name='Message' component={Messages} options={{ headerShown: false,}} />
               <Stack.Screen name='Chat' component={Chat} options={{headerBackAccessibilityLabel:false,headerLeftLabelVisible:false,}} />
               <Stack.Screen name='Share' component={Share} options={{headerBackAccessibilityLabel:false,headerLeftLabelVisible:false,}} />
+              <Stack.Screen name='Posted' component={PostedRides} options={{headerBackAccessibilityLabel:false,headerLeftLabelVisible:false,}} />
             </Stack.Navigator>
             :
             <Stack.Navigator>               

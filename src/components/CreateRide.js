@@ -215,11 +215,15 @@
 
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { primary } from '../theme/Theme';
-const AddRideScreen = () => {
+import {db, authentication} from '../config/firebase'
+import { doc, setDoc, addDoc, collection } from "firebase/firestore";
+
+
+const AddRideScreen = ({navigation}) => {
   const [price, setPrice] = useState('');
   const [seats, setSeats] = useState('');
   const [startLocation, setStartLocation] = useState('');
@@ -227,6 +231,27 @@ const AddRideScreen = () => {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [time, setTime] = useState(date.toLocaleTimeString());
+
+    const Data = {
+    price: price,
+    seat: seats,
+    startLocation: startLocation,
+    destination: destination,
+    time: time,
+    date: date,
+};
+
+
+  function sendData() {
+    const id = authentication.currentUser.uid;
+    setDoc(doc(db, "trips", id ), Data)
+        .then(() => {
+          Alert.alert('Trip Published')
+            navigation.navigate("Dashboard")
+        }).catch(error => {
+          console.error('Error adding document: ', error);
+        });
+}
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -295,7 +320,7 @@ const AddRideScreen = () => {
             onChange={handleDateChange}
           />
         )}
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+        <TouchableOpacity style={styles.submitButton} onPress={sendData}>
           <Text style={styles.submitButtonText}>Publish Ride</Text>
         </TouchableOpacity>
       </View>

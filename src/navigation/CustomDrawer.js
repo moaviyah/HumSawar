@@ -212,7 +212,8 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         marginTop:20,
-        position:'relative'
+        position:'relative',
+        alignSelf:'center'
     },
     cancelButtonText:{
         fontWeight: '500',

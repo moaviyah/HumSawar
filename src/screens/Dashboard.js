@@ -17,11 +17,12 @@ import { primary } from '../theme/Theme';
 
 const Dashboard = ({ navigation }) => {
     return (
-        <Drawer.Navigator drawerContent={props =><CustomDrawer {...props}/>} screenOptions={{headerStyle:({backgroundColor: 'transparent',}), headerTitleStyle:({})}} >
+        <Drawer.Navigator drawerContent={props =><CustomDrawer {...props}/>} screenOptions={{headerShown:false}} >
        
             <Drawer.Screen 
             name ="Home"
             component={Home} 
+            headerShown
             options={{
                swipeEnabled:true,
                drawerIcon:()=>(
