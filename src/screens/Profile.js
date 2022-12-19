@@ -22,6 +22,7 @@ const Profile = ({ navigation }) => {
                 const userData = documentSnapshot.data()
                 setName(userData.name)
                 setEmail(userData.email)
+                setCnic(userData.cnic)
               }else{
                 console.log('No data') 
               }
@@ -70,7 +71,7 @@ const Profile = ({ navigation }) => {
                     <Ionicons style={styles.icon} name='person' size={25}></Ionicons>
                     <View style={{alignSelf:'center'}}>                 
                       <Text style={styles.txt}>CNIC</Text>
-                      <Text>35123-987654321031-5</Text>
+                      <Text>{cnic}</Text>
                     </View> 
             </TouchableOpacity>
             {/* <TouchableOpacity style={styles.cards}>
@@ -92,11 +93,7 @@ const Profile = ({ navigation }) => {
                     </View>
             </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.btn} onPress={()=>updateData}>
-                <Text style={{fontSize:20, fontWeight:'500', color:'white'}}>
-                    Save
-                </Text>
-            </TouchableOpacity>
+
         </View>
         
         

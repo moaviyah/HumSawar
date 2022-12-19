@@ -13,10 +13,8 @@ const CustomDrawer = (props) => {
                 <ImageBackground >
                     <Image source={require('../pics/Saad-dp.png')} style={styles.image_bg} />
                 </ImageBackground>
-                <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.txt}> Saad Shafqat</Text>
-                    <FontAwesome name='car' size={18} color='white' style={{ paddingLeft: 15 }} />
-                </View>
+
                 <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 10 }}>
                     <DrawerItemList {...props} />
                 </View>
@@ -24,14 +22,14 @@ const CustomDrawer = (props) => {
             <View style={{ padding: 20, borderTopWidth: 1, borderTopColor: '#ccc' }}>
                 <TouchableOpacity style={{ paddingVertical: 15 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Ionicons name='share-social-outline' size={28} color={primary}></Ionicons>
-                        <Text style={{paddingVertical:5, fontSize: 17}}>Tell a Friend</Text>
+                        <Ionicons name='share-social-outline' size={25} color={primary}></Ionicons>
+                        <Text style={{paddingVertical:5, fontSize: 17, marginLeft:20}}>Tell a Friend</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity  onPress={SignOut} style={{paddingVertical:15}}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Ionicons name='exit-outline' size={28} color={primary}/>
-                        <Text style={{ paddingVertical:5, fontSize: 17 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                        <Ionicons name='exit-outline' size={25} color={primary}/>
+                        <Text style={{ paddingVertical:5, fontSize: 17, marginLeft:20 }}>
                             Sign Out
                         </Text>
                     </View>
@@ -45,17 +43,21 @@ export default CustomDrawer
 
 const styles = StyleSheet.create({
     image_bg: {
-        height: 80,
-        width: 80,
-        borderRadius: 40,
+        height: 90,
+        width: 90,
+        borderRadius: 50,
         marginBottom: 10,
         backgroundColor: 'light-blue',
-        margin: 10
+        margin: 10,
+        alignSelf:'center',
+        borderWidth:2,
+        borderColor:'white'
     },
     txt: {
         fontSize: 18,
         fontWeight: 'bold',
         color: 'white',
-        marginBottom: 15
+        marginBottom: 15,
+        alignSelf:'center'
     }
 })

@@ -44,7 +44,7 @@ const CreateRide = ({ navigation }) => {
 };
   function sendData() {
     const id = authentication.currentUser.uid;
-    setDoc(doc(db, "trips", id+date, ), Data)
+    setDoc(doc(db, "trips", id+destination, ), Data)
         .then(() => {
           Alert.alert('Trip Published')
             navigation.navigate("Dashboard")

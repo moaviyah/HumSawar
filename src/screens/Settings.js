@@ -29,18 +29,15 @@ const BtnCard =({text})=>{
   return(
     <View style={styles.card}>
     <Text style={styles.cardtxt}>Dark Mode</Text>
-    <Switch style={styles.switch} value={mode} onValueChange={()=>setMode((value)=!value)}></Switch>
-    
+    <Switch style={styles.switch} value={mode}></Switch>
     </View>
   )
 }
 
 const BtnCard1 =({text})=>{
-  const [mode, setMode] = useState(false)
   return(
     <View style={styles.card}>
     <Text style={styles.cardtxt}>Language</Text>
-
     </View>
   )
 }

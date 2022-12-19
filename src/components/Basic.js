@@ -6,10 +6,6 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { primary } from '../theme/Theme';
 import * as ImagePicker from 'expo-image-picker';
-import { uploadBytes } from "firebase/storage";
-// import { set, push, ref } from 'firebase/database';
-
-
 
 const Basic = ({ navigation }) => {
 
@@ -17,6 +13,7 @@ const Basic = ({ navigation }) => {
     const [age, setAge] = useState('')
     const [email, setEmail] = useState('')
     const [gender, setGender] = useState('male')
+    const [cnic, setCnic] = useState('')
     const [image, setImage] = useState(null);
 
     // useEffect(() => {
@@ -113,6 +110,7 @@ const Basic = ({ navigation }) => {
         gender: gender,
         age: age,
         email: email,
+        cnic: cnic, 
     };
     const data = [
         { key: '1', value: 'Female', },
@@ -211,9 +209,9 @@ const Basic = ({ navigation }) => {
                     arrowIconStyle={{ margin: 5 , shadowColor:'grey'
                 }}
                 />
-                <TextInput style={styles.input} value={age} onChangeText={text => setAge(text)} placeholder='Age' placeholderTextColor={'grey'} />
+                <TextInput style={styles.input} value={age} onChangeText={text => setAge(text)} placeholder='Age' placeholderTextColor={'grey'} keyboardType='numeric' />
                 <TextInput style={styles.input} value={email} onChangeText={text => setEmail(text)} placeholder='Email' placeholderTextColor={'grey'} />
-
+                <TextInput style={styles.input} value={cnic} onChangeText={text => setCnic(text)} placeholder='CNIC' placeholderTextColor={'grey'} />
             </View>
 
             <TouchableOpacity onPress={sendData} style={styles.btn}>
