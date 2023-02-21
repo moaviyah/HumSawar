@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Share, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
@@ -83,6 +83,7 @@ export default function App() {
               <Stack.Screen name='Vehicle' component={Vehicle} options={{ headerShown: false,}} />
               <Stack.Screen name='Message' component={Messages} options={{ headerShown: false,}} />
               <Stack.Screen name='Chat' component={Chat} options={{headerBackAccessibilityLabel:false,headerLeftLabelVisible:false,}} />
+              <Stack.Screen name='Share' component={Share} options={{headerBackAccessibilityLabel:false,headerLeftLabelVisible:false,}} />
             </Stack.Navigator>
             :
             <Stack.Navigator>               

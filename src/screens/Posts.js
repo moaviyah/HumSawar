@@ -15,21 +15,51 @@ const Posts = () => {
   const toRegistration =()=>{
   navigation.navigate('Create');
   }
+  const scheduledRides = [
+    { day: 'Mon', date: 'Feb 14', time: '10:00 AM', from: 'Home', to: 'Work' },
+    { day: 'Tue', date: 'Feb 15', time: '11:00 AM', from: 'Work', to: 'Gym' },
+    { day: 'Wed', date: 'Feb 16', time: '12:00 PM', from: 'Gym', to: 'Home' },
+    { day: 'Thu', date: 'Feb 17', time: '01:00 PM', from: 'Home', to: 'School' },
+    { day: 'Fri', date: 'Feb 18', time: '02:00 PM', from: 'School', to: 'Home' },
+  ];
   
   return (
-    <View style={styles.container}>
-
+    <View>
+      <View>
       <Text style={styles.label}>Publish Route</Text>
-      <TouchableOpacity style={styles.find} onPress={toRegistration}>
+      <TouchableOpacity style={styles.tab} onPress={toRegistration}>
+      <View style={styles.tabContent}>
+        <MaterialIcons name="location-on" size={24} color="#37474F" />
+        <Text style={styles.tabText}>location</Text>
+      </View>
+    </TouchableOpacity>
+    </View>
+      {/* <TouchableOpacity style={styles.find} onPress={toRegistration}>
         <View style={{ flexDirection: 'row', borderBottomWidth: 0.2 }}>
           <FontAwesome name='location-arrow' size={16} color={primary} style={{ margin: 15 }}></FontAwesome>
           <Text style={{ alignSelf: 'center', fontSize: 16, fontWeight: '200' }}>Where</Text>
           <FontAwesome name='search' color={primary} style={{ alignSelf: 'center', marginLeft: 230 }} size={16}></FontAwesome>
         </View>
-      </TouchableOpacity>
-      <ScrollView>
-        <Text style={styles.label}>Scheduled Trips</Text>
-        <UpcomingTrips></UpcomingTrips>
+      </TouchableOpacity> */}
+      <Text style={styles.label}>Scheduled Routes</Text>
+      <ScrollView horizontal>
+        {scheduledRides.map((ride, index) => (
+          <View style={styles.card} key={index}>
+            <View style={styles.cardHeader}>
+              <Text style={styles.day}>{ride.day}, {ride.date}</Text>
+              <Text style={styles.time}>{ride.time}</Text>
+            </View>
+            <View style={styles.cardContent}>
+              <MaterialCommunityIcons name="map-marker-outline" size={24} color="black" />
+              <Text style={styles.from}>{ride.from} </Text>
+              </View>
+              <View style={styles.cardContent}>
+              <MaterialCommunityIcons name="map-marker-outline" size={24} color="black" />
+              <Text style={styles.from}>{ride.to}</Text>
+
+            </View>
+          </View>
+        ))}
       </ScrollView>
     </View>
   )
@@ -38,8 +68,32 @@ const Posts = () => {
 export default Posts
 
 const styles = StyleSheet.create({
-  container: {
-
+  tab: {
+    alignSelf: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    width:350,
+    height:60,
+    justifyContent:'center'
+  },
+  tabContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tabText: {
+    color: '#37474F',
+    fontSize: 16,
+    marginLeft: 10,
   },
   label: {
     alignSelf: 'flex-start',
@@ -81,7 +135,68 @@ const styles = StyleSheet.create({
   tripPic: {
     borderRadius: 25,
     margin: 3
-  }
+  },
+  container: {
+    backgroundColor: '#F5F5F5',
+    paddingBottom: 20,
+  },
+  header: {
+    height: 60,
+    backgroundColor: '#37474F',
+    justifyContent: 'center',
+    paddingLeft: 20,
+  },
+  title: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    margin: 10,
+    width: 300,
+    height: 200,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  day: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  date: {
+    fontSize: 20,
+  },
+  cardContent: {
+    flexDirection: 'row',
+
+    padding: 10,
+  },
+  from: {
+    marginLeft: 10,
+    marginRight: 10,
+    fontSize: 16,
+    fontWeight:'500'
+  },
+  to:{
+    marginTop:50,
+    fontWeight:'500',
+  },
+  time: {
+    fontSize: 16,
+    marginRight:5
+  },
 })
 
 {/* <RideCard style={styles.card} /> */ }
