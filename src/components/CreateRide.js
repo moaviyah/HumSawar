@@ -212,10 +212,13 @@
 //         )
 //       };
 //  */}
+
+
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { primary } from '../theme/Theme';
 const AddRideScreen = () => {
   const [price, setPrice] = useState('');
   const [seats, setSeats] = useState('');
@@ -302,11 +305,9 @@ const AddRideScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#f7f7f7',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin:15,
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center'
   },
   title: {
     fontSize: 28,
@@ -314,7 +315,22 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   form: {
-    width: '80%',
+    alignSelf: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    width:'90%',
+    height:'70%',
+    justifyContent:'center',
   },
   input: {
     width: 250,
@@ -341,7 +357,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   submitButton: {
-    backgroundColor: '#2b2d42',
+    backgroundColor: primary,
     borderRadius: 5,
     paddingVertical: 15,
     alignItems: 'center',
