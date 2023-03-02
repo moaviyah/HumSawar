@@ -221,6 +221,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { primary } from '../theme/Theme';
 import {db, authentication} from '../config/firebase'
 import { doc, setDoc, addDoc, collection } from "firebase/firestore";
+import { getDatabase ,ref, set, push } from 'firebase/database';
 
 
 const AddRideScreen = ({navigation}) => {
@@ -231,26 +232,33 @@ const AddRideScreen = ({navigation}) => {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [time, setTime] = useState(date.toLocaleTimeString());
+  const database = getDatabase();
+  const ridesRef = ref(database, "rides");
+  const newRideRef = push(ridesRef);
+const newRideKey = newRideRef.key;
 
     const Data = {
     price: price,
     seat: seats,
-    startLocation: startLocation,
-    destination: destination,
+    from: startLocation,
+    to: destination,
     time: time,
     date: date,
 };
 
 
   function sendData() {
-    const id = authentication.currentUser.uid;
-    setDoc(doc(db, "trips", id ), Data)
-        .then(() => {
-          Alert.alert('Trip Published')
-            navigation.navigate("Dashboard")
-        }).catch(error => {
-          console.error('Error adding document: ', error);
-        });
+    set(newRideRef, Data);
+    console.log(`New ride created with key: ${newRideKey}`);
+    // const id = authentication.currentUser.uid;
+
+    // addDoc(collection(db, "trips" ), Data)
+    //     .then(() => {
+    //       Alert.alert('Trip Published')
+    //         navigation.navigate("Dashboard")
+    //     }).catch(error => {
+    //       console.error('Error adding document: ', error);
+    //     });
 }
 
   const handleDateChange = (event, selectedDate) => {
