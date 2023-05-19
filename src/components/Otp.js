@@ -5,9 +5,9 @@ import firebaseConfig from '../config/firebase';
 import {FirebaseRecaptchaVerifierModal} from 'expo-firebase-recaptcha'
 import { initializeApp, getApp } from 'firebase/app';
 import { getAuth, PhoneAuthProvider, signInWithCredential } from 'firebase/auth';
+import { getDatabase, ref, onValue } from 'firebase/database';
 
-
-export default Otp = ({route}) => {
+export default Otp = ({route, navigation}) => {
   const app = getApp();
   const auth = getAuth(app)
   const [code, setCode] = useState('');
@@ -17,7 +17,7 @@ export default Otp = ({route}) => {
   const inputRef4 = useRef(null);
   const inputRef5 = useRef(null);
   const inputRef6 = useRef(null);
-
+  const database = getDatabase();
 //   const handleOtpChange = (value, index) => {
 //     const otp = [...code];
 //     otp[index] = value;
@@ -31,6 +31,19 @@ const handleInput = (text, ref, index) => {
     setCode(otp.join(''));
   }
 };
+const fetchData = ()=>{
+    
+  onValue(ref (database, '/rides/') , querySnapShot => {
+       let data = querySnapShot.val() || {};
+       if (data){
+        
+     }else {
+       setPostedRides([])
+       setIsLoading(true)
+     }
+     });
+ 
+ }
 
   return (
     <View style={styles.container}>
@@ -98,9 +111,11 @@ const handleInput = (text, ref, index) => {
 
                  <TouchableOpacity 
              style={styles.btn}
-             onPress={async () => {
+             onPress={
+              async () => {
                 try {
                   const credential = PhoneAuthProvider.credential(route.params.paramKey, code);
+                  
                   await signInWithCredential(auth, credential);
                   console.log('success')
                   console.log('success')
@@ -108,7 +123,8 @@ const handleInput = (text, ref, index) => {
                 catch (err) {
                   console.log(err)
                 }
-              }}
+              }
+            }
             >
                 
                 <Text style={styles.btntext}>Confirm</Text>

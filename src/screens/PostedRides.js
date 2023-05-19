@@ -1,224 +1,320 @@
-import { StyleSheet, Text, View, ScrollView , TextInput} from 'react-native'
-import React, {useState, useEffect} from 'react'
+import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Dimensions, FlatList, Image } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
 import { db, authentication, database } from '../config/firebase'
-import { doc, setDoc, getDoc, collection, where } from "firebase/firestore";
-import { getDatabase, ref, query, orderByChild, equalTo, onValue,  } from "firebase/database";
+import { getDatabase, ref, query, orderByChild, equalTo, onValue, off, orderByValue, orderByKey, set, push, remove } from "firebase/database";
 import { Ionicons } from '@expo/vector-icons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { primary } from '../theme/Theme';
+import MapView, { Marker, AnimatedRegion } from 'react-native-maps'
+import MapViewDirections from 'react-native-maps-directions'
 
-const PostedRides = (to, from) => {
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+const PostedRides = ({ route }) => {
+  const { fromLat, fromLng, toLat, toLng } = route.params;
   const [isActive, setIsActive] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [postedRides, setPostedRides] = useState([]);
+  const [token, setToken] = useState()
+  const [seats, setSeats] = useState(1);
+  const mapRef = useRef()
   const id = authentication.currentUser.uid;
-  useEffect(() =>  {
+  const ridesRef = ref(database, 'rides');
+  const ridesQuery = query(ridesRef);
+  const newRideRef = push(ridesRef);
+  const newRequestKey = newRideRef.key;
+  // }, []);
+
+  useEffect(() => {
     
-    return onValue(ref (database, '/rides', orderByChild='to') , querySnapShot => {
-      let data = querySnapShot.val() || {};
-      if (data){
-      let rides = {...data};
-      const trip = Object.values(rides)
-      setPostedRides(trip);
-      console.log(postedRides)
-      setIsLoading(false)
-    }else {
-      setPostedRides([])
-      setIsLoading(true)
-    }
+
+    // orderByChild('to'), equalTo('Karachi, Karachi City, Sindh, Pakistan')
+    const onRidesValue = onValue(ridesQuery, (snapshot) => {
+      const data = snapshot.val();
+
+      if (data) {
+        let trip = { ...data };
+        console.log(trip.token)
+        const rides = Object.values(trip);
+        const filteredRides = Object.values(data)
+          .filter((data) => {
+            // Distance between user's location and ride 'from' location (in kilometers)
+            const distance = getDistanceFromLatLonInKm(fromLat, fromLng, data.fromLat, data.fromLng);
+            return distance < 10; // Only return rides within 1 km distance
+          });
+        function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+
+          const R = 6371; // Radius of the earth in km
+          const dLat = deg2rad(lat2 - lat1);
+          const dLon = deg2rad(lon2 - lon1);
+          const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          const d = R * c; // Distance in km
+          return d;
+        }
+        function deg2rad(deg) {
+          return deg * (Math.PI / 180)
+        }
+        setPostedRides(filteredRides);
+        setIsLoading(false);
+      } else {
+        setPostedRides([]);
+        setIsLoading(true);
+      }
     });
 
+    return () => {
+      off(ridesRef, onRidesValue);
+    };
   }, []);
-  const rides = [
-    {
-      id: '1',
-      time: '8:00 AM',
-      date: 'Feb 28',
-      price: '$20',
-      from: 'San Francisco',
-      to: 'Los Angeles',
-      seat:'2'
-    },
-    {
-      id: '2',
-      time: '10:00 AM',
-      date: 'Mar 1',
-      price: '$25',
-      from: 'San Francisco',
-      to: 'Los Angeles',
-      seat:'2'
-    },
-    {
-      id: '3',
-      time: '12:00 PM',
-      date: 'Mar 2',
-      price: '$30',
-      from: 'San Francisco',
-      to: 'Los Angeles',
-      seat:'2'
-    },
-    {
-      id: '4',
-      time: '2:00 PM',
-      date: 'Mar 3',
-      price: '$35',
-      from: 'San Francisco',
-      to: 'Los Angeles',
-      seat:'2'
-    },
-  ];
- 
-        // const fetchPostedRides = async () => {
-        //   const snapshot = await db.
-        //     getDoc(collection('trips'))
-        //     .where('startLocation', '==', 'london') // replace with user input
-        //     .where('destination', '==', 'paris') // replace with user input
-            
-    
-        //   const data = snapshot.docs.map((doc) => ({
-        //     id: doc.id,
-        //     ...doc.data(),
-        //   }));
-    
-        //   setPostedRides(data);
-        // };
-    
-        // fetchPostedRides();
 
+  const sendRequest = (rId, driverId, start, destination, date) => {
 
+    const Data = {
+      userRequesting: id,
+      date: date,
+      rideId: rId,
+      accepted: false,
+      declined: false,
+      driverId: driverId,
+      passengerName: authentication.currentUser.displayName,
+      start: start, 
+      destination: destination,
+      requestId: newRequestKey
+    }
+    const requestRef = ref(database, `users/${driverId}/requests`)
+    const newRequestRef = push(requestRef)
+    set(newRequestRef, Data)
+    console.log('sent')
+  }
+
+  const handleDecreaseSeats = () => {
+    if (seats > 1) {
+      setSeats(seats - 1);
+    }
+  };
+
+  const handleIncreaseSeats = () => {
+    setSeats(seats + 1);
+  };
   return (
-    // <View>
-    //   {isLoading ? 
-    //   (
-    //     <Text>Loading...</Text>
-    //   ) 
-    //   : (
-    //     postedRides.map(trip => (
-    //       <View>
-    //         <Text>{trip.from}</Text>
-    //         <Text>{trip.to}</Text>
-    //         <Text>{trip.date}</Text>
-    //         <Text>{trip.time}</Text>
-    //         <Text>{trip.price}</Text>
-    //       </View>
-    //     )
-    //     )
-    //   )}
-    // </View>
-    <ScrollView style={styles.container}>
-      
-     {isLoading?(
-      <Text>Loading...</Text>
-     )
-     :
-     postedRides.map((ride) => (
-        <View style={styles.card}>
-          <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
-          <View style={styles.cardRow}>
-            <Ionicons name="time-outline" size={20} color="gray" />
-            <Text style={styles.cardText}>{ride.time}</Text>
-          </View>
-          <View style={styles.cardRow}>
-            <Ionicons name="calendar-outline" size={20} color="gray" />
-            <Text style={styles.cardText}>{ride.date}</Text>
-          </View>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+      {
+        isLoading ?
+          (
+            <Text>Loading...</Text>
+          )
+          :
 
-          <View style={styles.cardRow}>
-            <Ionicons name="cash-outline" size={20} color="gray" />
-            <Text style={styles.cardText}>{ride.price}</Text>
-          </View>
-          <View style={styles.cardRow}>
-            <MaterialIcons name="event-seat" size={20} color="gray" />
-            <Text style={styles.cardText}>{ride.seat}</Text>
-          </View>
-          </View>
-          <View style={styles.cardRow}>
-            <MaterialIcons name="my-location" size={20} color="gray" />
-            <Text style={styles.cardText}>{ride.from}</Text>
-          </View>
-          <View style={styles.cardRow}>
-            <MaterialIcons name="location-on" size={20} color="gray" />
-            <Text style={styles.cardText}>{ride.to}</Text>
-          </View>
+          <View style={styles.container}>
+          <Text style={styles.heading}> Available rides</Text>
+            <View style={{flexDirection:'row', justifyContent:'center'}}> 
+              <Text style={styles.head1}>slide right</Text>
+              <Image source={require('../../assets/right-arrow.png')} style={{width:10, height:10, alignSelf:'center'}}/>
+            </View>
+            <ScrollView horizontal>
+              {postedRides.map((ride) => (
+                <View key={ride.id}>
+                  <View key={ride.rideId} style={styles.rideContainer}>
+                    <View style={styles.timeContainer}>
+                      <Text style={styles.timeDayTxt}>{ride.day}, {ride.time}</Text>
+                      <Text style={styles.timeDayTxt}>{new Date(ride.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</Text>
+                    </View>
+                    <View style={styles.btnView}>
+                      <Text style={{ alignSelf: 'center', color: '#4B5563' }}>Seats</Text>
+                      <View style={styles.seatsContainer}>
 
-          <View style={[styles.tabIndicator, isActive && styles.tabIndicatorActive]} />
-        <View style={styles.optionsContainer}>
-          <View style={styles.option}>
-            <MaterialIcons name='send-to-mobile' size={22} color='#777' />
-            <Text style={styles.optionText}>Request</Text>
+                        <TouchableOpacity style={styles.button} onPress={handleDecreaseSeats}>
+                          <Text style={styles.buttonText}>-</Text>
+                        </TouchableOpacity>
+                        <TextInput
+                          style={styles.input}
+                          value={seats.toString()}
+                          keyboardType="numeric"
+                          onChangeText={(text) => setSeats(parseInt(text) || 1)}
+                        />
+                        <TouchableOpacity style={styles.button} onPress={handleIncreaseSeats}>
+                          <Text style={styles.buttonText}>+</Text>
+                        </TouchableOpacity>
+                      </View>
+
+                      <TouchableOpacity style={styles.btn} onPress={()=>sendRequest(ride.rideId, ride.id, ride.to, ride.from, ride.date)}>
+                        <Image source={require('../../assets/send.png')} style={{ height: 20, width: 20 }} />
+                        <Text style={styles.btnTxt}>Request</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', paddingHorizontal: 10, justifyContent: 'space-between' }}>
+                      <Text style={[styles.seatsTxt, { fontWeight: '600' }]}>Empty Seats: {ride.availableSeats} / {ride.seat}</Text>
+                      <Text style={styles.seatsTxt}>Distance: {ride.distance}</Text>
+                    </View>
+
+                  </View>
+                  <MapView
+                    ref={mapRef}
+                    mapType='mutedStandard'
+
+                    style={styles.map}
+                    initialRegion={{
+                      latitude: ride.fromLat,
+                      longitude: ride.fromLng,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421,
+                    }}
+                    // initialRegion={{
+                    //   ...curLoc,
+                    //   latitudeDelta: latDelta,
+                    //   longitudeDelta: lngDelta,
+                    // }}
+                  >
+
+
+                    <Marker
+                      
+                      coordinate={{latitude:ride.fromLat, longitude:ride.fromLng}}
+                    >
+
+                      <Image
+                        source={require('../../assets/marker.png')}
+                        style={{
+                          width: 40,
+                          height: 40,
+
+                        }}
+                        resizeMode="contain"
+                      />
+                    </Marker>
+
+
+                    <Marker
+                      coordinate={{ latitude: ride.toLat, longitude: ride.toLng }}
+                    >
+                      <Image source={require('../../assets/marker1.png')} style={{ width: 40, height: 40 }} />
+                    </Marker>
+
+
+                    <MapViewDirections
+                      origin={{latitude:ride.fromLat, longitude:ride.fromLng}}
+                      destination={{latitude:ride.toLat, longitude: ride.toLng}}
+                      apikey='AIzaSyBjgdKGcG0IesW0_bk-IeF9HMbMZaUQ5OE'
+                      strokeWidth={1.5}
+                      strokeColor="red"
+                      optimizeWaypoints={true}
+                      onStart={(params) => {
+                        console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
+                      }}
+                      onReady={result => {
+                        console.log(`Distance: ${result.distance} km`)
+                        console.log(`Duration: ${result.duration} min.`)
+                        mapRef.current.fitToCoordinates(result.coordinates, {});
+                      }}
+                      onError={(errorMessage) => {
+                        console.log('GOT AN ERROR:', errorMessage);
+                      }}
+                    />
+                  </MapView>
+                </View>
+              ))}
+            </ScrollView>
           </View>
-          <View style={styles.option}>
-            <MaterialIcons name='person' size={22} color='#777' />
-            <Text style={styles.optionText} keyboardType='numeric'>Profile</Text>
-          </View>
-          <View style={styles.option}>
-            <AntDesign name='delete' size={22} color='#777' />
-            <Text style={styles.optionText}>Delete</Text>
-          </View>
-        </View>
-        </View>
-      ))}
-    </ScrollView>
-    
+      }
+    </View>
+
   )
 }
 
 export default PostedRides
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        backgroundColor: '#f8f8f8',
-      },
-      card: {
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 15,
-        marginBottom: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-      },
-      cardRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 5,
-      },
-      cardText: {
-        fontWeight: 'bold',
-      },
-      value: {
-        flex: 2,
-      },
-
-  tabIndicator: {
-    marginTop:8,
-    height: 4,
-    backgroundColor: '#DDD',
-    marginBottom:4
+  container: {
+    padding: 10,
   },
-  tabIndicatorActive: {
-    backgroundColor: '#1E90FF',
+  heading:{
+    fontSize:22, 
+    alignSelf:'center',
+    fontWeight:'600', 
+    marginTop: windowHeight*0.1
   },
-  optionsContainer: {
+  head1:{
+    alignSelf:'center', 
+    fontSize:11
+  },
+  rideContainer: {
+    backgroundColor: primary,
+    height: windowHeight * 0.20,
+    width: windowWidth * 0.9,
+    margin: 10,
+    borderRadius: 15,
+    justifyContent: 'space-between',
+    marginBottom:0
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 10,
+    padding: 5,
+    marginVertical: 5
+  },
+  timeDayTxt: {
+    color: '#FFFFFF',
+    fontWeight: '500'
+  },
+  btnView: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingHorizontal: 10
+  },
+  btn: {
+    height: windowHeight * 0.07,
+    backgroundColor: '#FFFFFF',
+    width: windowWidth * 0.30,
+    alignSelf: 'center',
+    borderRadius: 10,
+    justifyContent: 'space-evenly',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'center',
-    marginBottom:3,
+    padding: 5
   },
-  option: {
+  btnTxt: {
+    fontWeight: '500',
+    color: '#4B5563'
+  },
+  seatsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 25,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 10
   },
-  optionText: {
-    marginLeft: 5,
-    color: '#777',
+  button: {
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  buttonText: {
+    fontSize: 18,
+  },
+  input: {
+    width: 20,
+    height: 30,
+    borderWidth: 1,
+    borderColor: 'gray',
+    textAlign: 'center',
+    marginHorizontal: 10,
+  },
+  seatsTxt: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    marginVertical: 10
+  }, 
+  map:{
+    height:windowHeight*0.5,
+    width: windowWidth * 0.9,
+    alignSelf:'center',
+    borderRadius:10
+  }
 })

@@ -171,12 +171,15 @@
 
 // })import React from 'react';
 import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Pressable, Modal} from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getDatabase, ref, query, orderByChild, equalTo, onValue,  } from "firebase/database";
+import { authentication } from '../config/firebase';
+import { Ionicons } from '@expo/vector-icons';
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [user, setUser] = useState([]);
   const handleVehicleInfoPress = () => {
     setModalVisible(true);
   };
@@ -185,33 +188,54 @@ const Profile = () => {
     setModalVisible(false);
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Image source={require('../pics/Saad-dp.png')} style={styles.profileImage} />
-        <Text style={styles.name}>John Doe</Text>
-      </View>
+  useEffect(() =>  {
+    const id = authentication.currentUser.uid
+    const database = getDatabase()
+    const authRef = ref(database, `users/${id}/auth`);
+    return onValue( authRef, querySnapShot => {
+      let data = querySnapShot.val() || {};
+      if (data){
+      let d = {...data};
+      const user = Object.values(d)
+      setUser(user);
+      console.log(user)
 
+    }else {
+      setUser([])
+    }
+    });
+
+  }, []);
+
+  return user.map((u)=>(
+    
+    <View style={styles.container}>
       <View style={styles.body}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Basic Information</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Name:</Text>
-            <TextInput style={styles.input} defaultValue="John Doe" />
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Email:</Text>
-            <TextInput style={styles.input} defaultValue="johndoe@gmail.com" />
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Phone:</Text>
-            <TextInput style={styles.input} defaultValue="123-456-7890" />
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>CNIC:</Text>
-            <TextInput style={styles.input} defaultValue="12345-1234567-1" />
-          </View>
-          <Pressable onPress={handleVehicleInfoPress} style={styles.vehicleInfoButton}>
+
+      <View style={styles.card}>
+        <View style={styles.row}>
+        <Image source={require('../pics/ProfileImage.webp')} style={styles.profileImage} />
+          <Text style={styles.title}>{u.name}</Text>
+        </View>
+        <View style={styles.row}>
+          <Ionicons name='mail-outline' size={24} color='gray' />
+          <Text style={styles.subtitle}>{u.email}</Text>
+        </View>
+        <View style={styles.row}>
+          <Ionicons name='male-female-outline' size={24} color='gray' />
+          <Text style={styles.subtitle}>{u.gender}</Text>
+        </View>
+        <View style={styles.row}>
+          <Ionicons name='calendar-outline' size={24} color='gray' />
+          <Text style={styles.subtitle}>{u.age}</Text>
+        </View>
+        <View style={styles.row}>
+          <Ionicons name='card-outline' size={24} color='gray' />
+          <Text style={styles.subtitle}>{u.cnic}</Text>
+        </View>
+    </View>
+        <Pressable onPress={handleVehicleInfoPress} style={styles.vehicleInfoButton}>
         <Text style={styles.vehicleInfoButtonText}>Vehicle Information</Text>
         <Icon name="chevron-right" size={25} color="#A2A2A2" />
       </Pressable>
@@ -246,7 +270,7 @@ const Profile = () => {
         </View>
       </View>
     </View>
-  );
+  ));
 };
 
 const styles = StyleSheet.create({
@@ -308,8 +332,13 @@ const styles = StyleSheet.create({
       paddingVertical: 10,
       borderRadius: 10,
       marginTop: 20,
-      shadowColor: '#000000',
-      shadowOpacity: 0.1,
+      shadowColor: '#000',
+      shadowOpacity: 0.2,
+      justifyContent:'space-between',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
     },
     modalContainer: {
       flex: 1,
@@ -354,6 +383,37 @@ const styles = StyleSheet.create({
     vehicleInfoValue: {
       flex: 2,
     },
+    card: {
+      marginTop:50,
+      backgroundColor: '#fff',
+      borderRadius: 10,
+      padding: 20,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 5,
+    },
+    title: {
+      marginLeft: 10,
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#333',
+    },
+    subtitle: {
+      marginLeft: 10,
+      fontSize: 18,
+      color: 'gray',
+    },
+
   });
 
   export default Profile

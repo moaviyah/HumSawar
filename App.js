@@ -9,7 +9,6 @@ import Login from './src/screens/Login';
 import Dashboard from './src/screens/Dashboard';
 import { Store } from './src/store/Store';
 import Otp from './src/components/Otp';
-import Basic from './src/components/Basic';
 import DriverRegistration from './src/Registration/DriverRegistration';
 import Posts from './src/screens/Posts';
 import License from './src/Registration/License';
@@ -17,14 +16,14 @@ import Cnic from './src/Registration/Cnic';
 import Vehicle from './src/Registration/Vehicle';
 import Home from './src/screens/Home';
 import Rides from './src/screens/Rides';
-import CreateRide from './src/components/CreateRide';
+import CreateRide from './src/screens/CreateRide';
 import { getDoc, doc, } from "firebase/firestore";
 import { authentication, db, } from './src/config/firebase';
 import SearchRide from './src/components/SearchRide';
 import Messages from './src/message/Messages';
 import Chat from './src/message/Chat';
 import PostedRides from './src/screens/PostedRides';
-
+import Notifications from './src/screens/Notifications';
     // useEffect(() => {     
     // const id = authentication.currentUser.uid;
 
@@ -48,13 +47,10 @@ import PostedRides from './src/screens/PostedRides';
 export default function App() {
   const Stack = createStackNavigator();
   const [isSignedIn, setIsSignedIn] = useState(false);
-
-
-
+  const [isFirstTime, setIsFirstTime] = useState(false)
 
   onAuthStateChanged(authentication, (user) => {
     if (user) {
-      // const id = authentication.currentUser.uid;
       setIsSignedIn(true)
 
     } else {
@@ -62,6 +58,7 @@ export default function App() {
 
     }
   });
+  
   return (
 
     <Provider store={Store}>
@@ -72,7 +69,6 @@ export default function App() {
             ?
             <Stack.Navigator>
               <Stack.Screen name='Dashboard' component={Dashboard} options={{ headerShown: false, headerLeftLabelVisible:true}}/>
-              <Stack.Screen name='Basic' component={Basic} options={{ headerShown: false,}} />
               <Stack.Screen name='Home' component={Home} options={{ headerShown: false, headerLeftLabelVisible:false}} />
               <Stack.Screen name='Posts' component={Posts} options={{ headerShown: false,}} />
               <Stack.Screen name='Ride' component={Rides} options={{ headerShown: false,}} />
@@ -85,15 +81,18 @@ export default function App() {
               <Stack.Screen name='Message' component={Messages} options={{ headerShown: false,}} />
               <Stack.Screen name='Chat' component={Chat} options={{headerBackAccessibilityLabel:false,headerLeftLabelVisible:false,}} />
               <Stack.Screen name='Share' component={Share} options={{headerBackAccessibilityLabel:false,headerLeftLabelVisible:false,}} />
-              <Stack.Screen name='Posted' component={PostedRides} options={{headerBackAccessibilityLabel:false,headerLeftLabelVisible:false,}} />
+              <Stack.Screen name='Notifications' component={Notifications} options={{ headerShown: false,}} />
+              <Stack.Screen name='Posted' component={PostedRides} options={{headerShown:false}} />
             </Stack.Navigator>
+
             :
+
             <Stack.Navigator>               
               <Stack.Screen name='Login' component={Login}  options={{headerShown:false}}  />
               <Stack.Screen name='Verify' component={Otp}  options={{headerShown:false}}  />
-              <Stack.Screen name='Basic' component={Basic}  options={{headerStyle:({backgroundColor:"transparent"})}}  />
             </Stack.Navigator>
         }
+
       </SafeAreaProvider>
     </NavigationContainer>
   </Provider>

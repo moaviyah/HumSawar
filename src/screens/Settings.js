@@ -96,56 +96,42 @@
 //     borderRadius:15
 //   }
 // })
-
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { StyleSheet, View, Text, Switch, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const SettingsScreen = () => {
-  const [language, setLanguage] = useState('English');
-  const [darkMode, setDarkMode] = useState(false);
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(false);
+  const [isLanguageSelected, setIsLanguageSelected] = useState(false);
 
-  const handleLanguageChange = (newLanguage) => {
-    setLanguage(newLanguage);
-  };
+  const toggleDarkMode = () => {
+    setIsDarkModeEnabled(!isDarkModeEnabled);
+  }
 
-  const handleDarkModeToggle = () => {
-    setDarkMode(!darkMode);
-  };
+  const toggleLanguage = () => {
+    setIsLanguageSelected(!isLanguageSelected);
+  }
 
-  const handleDeleteAccount = () => {
-    // Implement delete account functionality
-  };
+  const renderSettingItem = (iconName, title, onPress) => {
+    return (
+      <TouchableOpacity style={styles.settingItem} onPress={onPress}>
+        <Ionicons name={iconName} size={24} color="black" />
+        <Text style={styles.settingTitle}>{title}</Text>
+        <Ionicons name="chevron-forward" size={24} color="black" />
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.settingItem}>
-        <Text style={styles.settingItemText}>Dark Mode</Text>
-        <TouchableOpacity
-          style={darkMode ? styles.toggleButtonDark : styles.toggleButtonLight}
-          onPress={handleDarkModeToggle}
-        />
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.settingItem}>
-        <Text style={styles.settingItemText}>Language</Text>
-        <Text style={styles.settingItemSubtext}>{language}</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.settingItem}>
-        <Text style={styles.settingItemText}>Privacy</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.settingItem}>
-        <Text style={styles.settingItemText}>Help</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.settingItem}>
-        <Text style={styles.settingItemText}>Complaints and Suggestions</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
-        <Text style={styles.deleteButtonText}>Delete Account</Text>
-      </TouchableOpacity>
+      <Text style={styles.title}>Settings</Text>
+      <View style={styles.settingsContainer}>
+        {renderSettingItem('moon-outline', 'Dark mode', toggleDarkMode)}
+        {renderSettingItem('globe-outline', 'Language', toggleLanguage)}
+        {renderSettingItem('shield-checkmark-outline', 'Privacy', () => {})}
+        {renderSettingItem('help-circle-outline', 'Help', () => {})}
+        {renderSettingItem('chatbubble-ellipses-outline', 'Complaints and suggestions', () => {})}
+      </View>
     </View>
   );
 };
@@ -153,50 +139,29 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#F2F2F2',
+    padding: 20,
+
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  settingsContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
   },
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
-    marginTop:20
+    marginBottom: 20,
   },
-  settingItemText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  settingItemSubtext: {
-    fontSize: 16,
-    color: '#666',
-  },
-  toggleButtonLight: {
-    width: 48,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#CCC',
-  },
-  toggleButtonDark: {
-    width: 48,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#FFF',
-    backgroundColor: '#333',
-  },
-  deleteButton: {
-    backgroundColor: '#FF3B30',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignSelf: 'center',
-  },
-  deleteButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+  settingTitle: {
+    flex: 1,
+    fontSize: 18,
+    marginLeft: 20,
   },
 });
 

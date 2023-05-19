@@ -53,11 +53,7 @@ const CustomDrawer = (props, { visible, onClose }) => {
     };
     return (
         <View style={{ flex: 1 }}>
-            <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: primary }} >
-                <ImageBackground >
-                    <Image source={require('../pics/Saad-dp.png')} style={styles.image_bg} />
-                </ImageBackground>
-                <Text style={styles.txt}> Saad Shafqat</Text>
+            <DrawerContentScrollView {...props} contentContainerStyle={{  }} >
 
                 <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 10 }}>
                     <DrawerItemList {...props} />

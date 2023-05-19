@@ -4,6 +4,7 @@ import {getAuth, initializeAuth, getReactNativePersistence} from "firebase/auth"
 import { getFirestore } from "firebase/firestore";
 import { getStorage, ref, uploadString } from "firebase/storage";
 import {getDatabase} from 'firebase/database'
+import { getMessaging } from "firebase/messaging";
 
 
 export const firebaseConfig = {

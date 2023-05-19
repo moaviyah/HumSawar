@@ -1,13 +1,19 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, Image, Dimensions } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import { primary } from '../theme/Theme'
+import { primary, textColor } from '../theme/Theme'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native';
 import { getDoc, doc, } from "firebase/firestore";
-import { authentication, db, } from '../config/firebase';
+import { getDatabase, ref, query, orderByChild, equalTo, onValue, off, orderByValue, orderByKey  } from "firebase/database";
+import { authentication, db, database } from '../config/firebase';
+
+
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const Posts = () => {
   const navigation = useNavigation(); 
@@ -15,52 +21,106 @@ const Posts = () => {
   const toRegistration =()=>{
   navigation.navigate('Create');
   }
-  const scheduledRides = [
-    { day: 'Mon', date: 'Feb 14', time: '10:00 AM', from: 'Home', to: 'Work' },
-    { day: 'Tue', date: 'Feb 15', time: '11:00 AM', from: 'Work', to: 'Gym' },
-    { day: 'Wed', date: 'Feb 16', time: '12:00 PM', from: 'Gym', to: 'Home' },
-    { day: 'Thu', date: 'Feb 17', time: '01:00 PM', from: 'Home', to: 'School' },
-    { day: 'Fri', date: 'Feb 18', time: '02:00 PM', from: 'School', to: 'Home' },
-  ];
+  // const scheduledRides = [
+  //   { day: 'Mon', date: 'Feb 14', time: '10:00 AM', from: 'Home', to: 'Work' },
+  //   { day: 'Tue', date: 'Feb 15', time: '11:00 AM', from: 'Work', to: 'Gym' },
+  //   { day: 'Wed', date: 'Feb 16', time: '12:00 PM', from: 'Gym', to: 'Home' },
+  //   { day: 'Thu', date: 'Feb 17', time: '01:00 PM', from: 'Home', to: 'School' },
+  //   { day: 'Fri', date: 'Feb 18', time: '02:00 PM', from: 'School', to: 'Home' },
+  // ];
+
+  const [scheduledRides, setScheduledRides] = useState([])
+
+  useEffect(() => {
+    const id = authentication.currentUser.uid;
+    const ridesRef = ref(database, 'rides');
+    const ridesQuery = query(ridesRef, orderByChild('id'), equalTo(id));
+    const onRidesValue = onValue(ridesQuery, (snapshot) => {
+      const data = snapshot.val();
+      // console.log(data)
+      if (data) {
+        let trip = {...data};
+        const rides = Object.values(trip);
+        setScheduledRides(rides);
+
+      } else {
+        setScheduledRides([]);
+
+      }
+    })
+    return () => {
+      // Unsubscribe from the database to prevent memory leaks
+      off(ridesRef, onRidesValue);
+    };
+  },
+  
+  []
+  )
   
   return (
     <View>
       <View>
-      <Text style={styles.label}>Publish Route</Text>
+      <Text style={styles.label}>Publish Ride</Text>
       <TouchableOpacity style={styles.tab} onPress={toRegistration}>
       <View style={styles.tabContent}>
-        <MaterialIcons name="location-on" size={24} color="#37474F" />
-        <Text style={styles.tabText}>location</Text>
+        <Image source={require('../../assets/carpool.png')} style={{height:35, width:35}}/>
+        <Text style={styles.tabText}>Going Somewhere? Catch a passenger</Text>
       </View>
     </TouchableOpacity>
     </View>
-      {/* <TouchableOpacity style={styles.find} onPress={toRegistration}>
-        <View style={{ flexDirection: 'row', borderBottomWidth: 0.2 }}>
-          <FontAwesome name='location-arrow' size={16} color={primary} style={{ margin: 15 }}></FontAwesome>
-          <Text style={{ alignSelf: 'center', fontSize: 16, fontWeight: '200' }}>Where</Text>
-          <FontAwesome name='search' color={primary} style={{ alignSelf: 'center', marginLeft: 230 }} size={16}></FontAwesome>
-        </View>
-      </TouchableOpacity> */}
+
       <Text style={styles.label}>Scheduled Routes</Text>
       <ScrollView horizontal>
         {scheduledRides.map((ride, index) => (
-          <View style={styles.card} key={index}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.day}>{ride.day}, {ride.date}</Text>
-              <Text style={styles.time}>{ride.time}</Text>
-            </View>
-            <View style={styles.cardContent}>
-              <MaterialCommunityIcons name="map-marker-outline" size={24} color="black" />
-              <Text style={styles.from}>{ride.from} </Text>
-              </View>
-              <View style={styles.cardContent}>
-              <MaterialCommunityIcons name="map-marker-outline" size={24} color="black" />
-              <Text style={styles.from}>{ride.to}</Text>
+          <View style={styles.card} key={ride.rideId}>
 
+            <View style={styles.cardHeader}>
+              <Text style={styles.seatsLeft}>Seats left: {ride.availableSeats}/{ride.seat}</Text>
+              <Text style={styles.time}>{ride.day}</Text>
+            </View>
+
+            <View style={styles.cardContent}>
+              <Image source={require('../../assets/freelance-work.png')} style={{height:30, width:30}}/>
+              <Text numberOfLines={2} ellipsizeMode='tail' style={styles.from}>{ride.from} </Text>
+            </View>
+
+            <View style={styles.cardContent}>
+              <Image source={require('../../assets/journey.png')} style={{height:30, width:30}}/>
+              <Text numberOfLines={2} ellipsizeMode='tail' style={styles.from}>{ride.to}</Text>
+            </View>
+
+            <View style={styles.statusTimeContainer}>
+              <View>
+                <Text style={{color:'#929292', fontSize:11}} >
+                  Status:
+                </Text>
+                <Text style={{color:'#929292'}}>
+                  {ride.status}
+                </Text>
+              </View>
+              <View style={styles.timeDate}>
+                <View style={{flexDirection:'row',  marginHorizontal:windowWidth*0.05}}>
+                <Image source={require('../../assets/calendar2.png')} style={{height:25, width:25,}}/>
+                <Text style={{color:textColor, margin:4}}>
+                {new Date(ride.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+                </Text>
+                </View>
+                <View style={{flexDirection:'row',  marginHorizontal:windowWidth*0.02}}>
+                <Image source={require('../../assets/clock1.png')} style={{height:25, width:25}}/>
+                <Text style={{color:textColor, margin:4}}>
+                  {ride.time}
+                </Text>
+                </View>
+                
+              </View>
             </View>
           </View>
         ))}
+        
       </ScrollView>
+      <View style={{alignSelf:'flex-end', margin:20, backgroundColor:'#fff' ,borderRadius:20, padding:10, justifyContent:'center', marginTop:windowWidth*0.3}}>
+          <Image source={require('../../assets/new-message.png')} style={{width:50, height:50, alignSelf:'center'}}/>
+      </View>
     </View>
   )
 }
@@ -156,7 +216,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10,
     width: 300,
-    height: 200,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -170,6 +229,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
+    marginHorizontal: windowWidth*0.02
   },
   day: {
     fontSize: 20,
@@ -187,7 +247,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     fontSize: 16,
-    fontWeight:'500'
+    fontWeight:'500',
+    
   },
   to:{
     marginTop:50,
@@ -197,69 +258,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight:5
   },
+  seatsLeft:{
+    color:'#929292',
+    fontSize:16,
+    alignSelf:'center'
+  },
+  statusTimeContainer:{
+    flexDirection:'row',
+    marginHorizontal:windowWidth*0.04,
+    alignContent:'center',
+    marginVertical:windowWidth*0.02,
+    alignItems:'center',
+    justifyContent:'space-between'
+  },
+  timeDate:{
+    flexDirection:'row',
+
+  }
 })
-
-{/* <RideCard style={styles.card} /> */ }
-{/* <TouchableOpacity  onPress={()=>{navigation.navigate("LiveLocation")}} style={styles.btn}>
-        <FontAwesome5 name='search-location' color='white' size={40} onPress={()=>{navigation.navigate("Basic")}} style={styles.floatingbtn}/>
-      </TouchableOpacity> */}
-
-const UpcomingTrips = () => {
-  const [startLocation, setStartLocation] = useState('');
-  const [destination, setDestination] = useState('')
-  useEffect(() => {     
-    const id = authentication.currentUser.uid;
-
-      getDoc(doc(db, "trips", id))
-        .then(documentSnapshot => {
-          if (documentSnapshot.exists) {
-            const userData = documentSnapshot.data()
-            console.log(userData.price)
-            setStartLocation(userData.startLocation)
-            setDestination(userData.destination)
-          }else{
-            console.log('No data') 
-          }
-        })
-        }, []);
-  const items = [
-    {
-      image: '../../src/assets/Images/ProfileImage.webp',
-      day: 'Friday',
-      date: '30 Dec 2022',
-      time: '10.21',
-      from: startLocation,
-      to: destination,
-}
-  ]
-  return (
-    <View>
-      {items.map(e => (
-        <TouchableOpacity style={styles.btnTab}>
-          <View style={{ flexDirection: 'row', alignContent: 'space-around', borderBottomWidth: 0.2 }}>
-            <MaterialIcons name='person-outline' size={30} color={primary} style={styles.tripPic}></MaterialIcons>
-
-            <View style={{ marginLeft: 15 }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{e.day}</Text>
-              <Text>{e.date}</Text>
-            </View>
-            <Text style={{ alignSelf: 'center', marginLeft: 170, fontWeight: '500' }}>{e.time}</Text>
-          </View>
-
-          <View style={{ flexDirection: 'row', padding:10, alignItems:'center', justifyContent:'flex-start'}}>
-            <FontAwesome name='circle-o' size={16} color={primary} style={{ marginTop:5 }}></FontAwesome>
-            <Text style={{ alignSelf: 'center', fontSize: 16, fontWeight: '500', marginLeft:25 }}> {e.from}</Text>
-          </View>
-
-          <MaterialCommunityIcons name='dots-vertical' size={24} color={primary} style={{ marginLeft: 5 }}></MaterialCommunityIcons>
-
-          <View style={{ flexDirection: 'row', padding:10, alignItems:'center', justifyContent:'flex-start'}}>
-            <FontAwesome name='circle-o' size={16} color={primary} style={{ marginTop:5 }}></FontAwesome>
-            <Text style={{ alignSelf: 'center', fontSize: 16, fontWeight: '500', marginLeft:25 }}> {e.to}</Text>
-          </View>
-
-        </TouchableOpacity>
-      ))}
-    </View>
-  )
-}

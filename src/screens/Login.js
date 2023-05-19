@@ -7,8 +7,6 @@ import { initializeApp, getApp } from 'firebase/app';
 import { getAuth, PhoneAuthProvider, signInWithCredential } from 'firebase/auth';
 
 
-
-
 const Login = ({ navigation }) => {
     const [phoneNumber, setPhoneNumber]= useState('');
     const [verificationId, setVerificationId] = useState('');

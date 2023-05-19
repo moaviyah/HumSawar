@@ -13,6 +13,7 @@ import About from '../screens/About';
 import FontAwesome from'react-native-vector-icons/FontAwesome'
 import AntDesign from'react-native-vector-icons/AntDesign'
 import { primary } from '../theme/Theme';
+import CurrentRides from './CurrentRides';
 
 
 const Dashboard = ({ navigation }) => {
@@ -37,13 +38,19 @@ const Dashboard = ({ navigation }) => {
  
                 )
              }}/> 
-             <Drawer.Screen name="Messages" component={Messages}
+             <Drawer.Screen name='Current Rides' component={CurrentRides}options={{
+                drawerIcon:()=>(
+                 <Ionicons name='person-outline' size={22}  color={primary}/>
+ 
+                )
+             }}/> 
+             {/* <Drawer.Screen name="Messages" component={Messages}
              options={{
                 drawerIcon:()=>(
                  <Ionicons name='chatbox-ellipses-outline' size={22}  color={primary}/>
  
                 )
-             }} />
+             }} /> */}
             <Drawer.Screen name="History" component={History} 
             options={{
                 drawerIcon:()=>(
@@ -51,12 +58,7 @@ const Dashboard = ({ navigation }) => {
                 )
              }}/> 
              
-            <Drawer.Screen name="Settings" component={Settings} 
-            options={{
-                drawerIcon:()=>(
-                 <Ionicons name='settings-outline' size={22} color={primary}/>
-                )
-             }}/>
+        
              <Drawer.Screen name="About" component={About} 
             options={{
                 drawerIcon:()=>(

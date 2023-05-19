@@ -1,0 +1,168 @@
+{
+  "chat": {
+    "-NR8PXokr7Tax7bjJ2zV": {
+      "_id": "6edb5147-281f-4c13-a6d3-ec31240fb8b1",
+      "text": "Hello bhai",
+      "user": {
+        "_id": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2"
+      }
+    },
+    "-NR8QNYGh03v0K5hAdlE": {
+      "_id": "691c7481-a4e1-47b4-a08e-1666015ee2c2",
+      "text": "G",
+      "user": {
+        "_id": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2"
+      }
+    },
+    "-NR8QTvh0lZiuE1ySA6o": {
+      "_id": "1f507de6-b0cd-434a-a2e7-69745b968560",
+      "text": "Lo",
+      "user": {
+        "_id": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2"
+      }
+    },
+    "-NR8kQ6PCtq6mnr6QYVn": {
+      "_id": "3849308d-2223-4c0f-afc0-3e087bd06b88",
+      "text": "Hello ji?",
+      "user": {
+        "_id": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2"
+      }
+    },
+    "-NR8kjPPPusmSVmRQRj2": {
+      "_id": "e4b7371e-7b53-4649-a00e-b9274162d39f",
+      "text": "Why?",
+      "user": {
+        "_id": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2"
+      }
+    },
+    "-NUg2NskUUap7ar3ExFy": {
+      "_id": "a25cf75f-027f-4b11-9e1c-75e31cc70952",
+      "text": "Hi",
+      "user": {
+        "_id": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2"
+      }
+    }
+  },
+  "rides": {
+    "-NVkjkRVrJKsaXTeBlNs": {
+      "availableSeats": "4",
+      "date": "2023/05/20",
+      "day": "Sunday",
+      "distance": "0.4",
+      "from": "Service Road E-9 / E-8, Islamabad, Pakistan، E-9/4 E-9, Islamabad, Islamabad Capital Territory 44000, Pakistan",
+      "fromLat": 33.713832,
+      "fromLng": 73.02465400000001,
+      "id": "hxaWRkPmu8UpnTjGnCWKsDJzFPI2",
+      "pinkEnabled": false,
+      "price": "50",
+      "rideId": "-NVkjkRVrJKsaXTeBlNs",
+      "seat": "4",
+      "status": "Not Started",
+      "time": "04:25",
+      "to": "Shangrilla Rd, E-8/1 E 8/1 E-8, Islamabad, Islamabad Capital Territory, Pakistan",
+      "toLat": 33.7155886,
+      "toLng": 73.0288246,
+      "token": "4476a42be5cfe6c030a41ef1ce9bbc8369e77d600f13cb673d46823b20d282d6"
+    },
+    "-NVknfmg-meLXGZ7Klx5": {
+      "availableSeats": "1",
+      "date": "2023/05/22",
+      "day": "Sunday",
+      "distance": "0.8",
+      "from": "F-9, Islamabad, Islamabad Capital Territory, Pakistan",
+      "fromLat": 33.7081263,
+      "fromLng": 73.0285364,
+      "id": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2",
+      "pinkEnabled": false,
+      "price": "30",
+      "rideId": "-NVknfmg-meLXGZ7Klx5",
+      "seat": "1",
+      "status": "Not Started",
+      "time": "08:15",
+      "to": "Shangrilla Rd, E-8/1 E 8/1 E-8, Islamabad, Islamabad Capital Territory, Pakistan",
+      "toLat": 33.7155886,
+      "toLng": 73.0288246,
+      "token": "2b08b103dcf67aeff007f77edd42f5db1ce7d4b5b63afbc448766ab6576cbbad"
+    }
+  },
+  "users": {
+    "hxaWRkPmu8UpnTjGnCWKsDJzFPI2": {
+      "age": "22",
+      "cnic": "Cnic",
+      "email": "Saad@shafqat.com",
+      "gender": "Male",
+      "month": 2,
+      "name": "saad",
+      "requests": {
+        "-NVkttijcK89xsUHHvBG": {
+          "accepted": false,
+          "date": 1684447664945,
+          "declined": false,
+          "driverId": "hxaWRkPmu8UpnTjGnCWKsDJzFPI2",
+          "passengerName": "Taimoor hassan",
+          "rideId": "-NVkjkRVrJKsaXTeBlNs",
+          "userRequesting": "RYcT41QIE1UI5zfjZEbG1tmIJ1g1"
+        },
+        "-NVkttj7laH_DkoUFlwL": {
+          "accepted": false,
+          "date": 1684447664971,
+          "declined": false,
+          "driverId": "hxaWRkPmu8UpnTjGnCWKsDJzFPI2",
+          "passengerName": "Taimoor hassan",
+          "rideId": "-NVkjkRVrJKsaXTeBlNs",
+          "userRequesting": "RYcT41QIE1UI5zfjZEbG1tmIJ1g1"
+        },
+        "-NVkuoErUrKFpXoPxXhy": {
+          "accepted": false,
+          "date": 1684447904784,
+          "declined": false,
+          "driverId": "hxaWRkPmu8UpnTjGnCWKsDJzFPI2",
+          "passengerName": "Taimoor hassan",
+          "rideId": "-NVkjkRVrJKsaXTeBlNs",
+          "userRequesting": "RYcT41QIE1UI5zfjZEbG1tmIJ1g1"
+        }
+      },
+      "status": "Not Approved",
+      "userId": "hxaWRkPmu8UpnTjGnCWKsDJzFPI2"
+    },
+    "kwMHn07LP4WgRVuQ4OxKvqsREfZ2": {
+      "age": "18",
+      "cnic": "3510397610313",
+      "email": "Maviyaakram6@gmail.com",
+      "gender": "Male",
+      "month": 5,
+      "name": "Maviya akram",
+      "requests": {
+        "-NVkttiqliJfbhknMRmj": {
+          "accepted": false,
+          "date": 1684447664953,
+          "declined": false,
+          "driverId": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2",
+          "passengerName": "Taimoor hassan",
+          "rideId": "-NVknfmg-meLXGZ7Klx5",
+          "userRequesting": "RYcT41QIE1UI5zfjZEbG1tmIJ1g1"
+        },
+        "-NVkttj9-tElEuzSdzL7": {
+          "accepted": false,
+          "date": 1684447664973,
+          "declined": false,
+          "driverId": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2",
+          "passengerName": "Taimoor hassan",
+          "rideId": "-NVknfmg-meLXGZ7Klx5",
+          "userRequesting": "RYcT41QIE1UI5zfjZEbG1tmIJ1g1"
+        },
+        "-NVkuoEuXv90RMH94w0b": {
+          "accepted": false,
+          "date": 1684447904787,
+          "declined": false,
+          "driverId": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2",
+          "passengerName": "Taimoor hassan",
+          "rideId": "-NVknfmg-meLXGZ7Klx5",
+          "userRequesting": "RYcT41QIE1UI5zfjZEbG1tmIJ1g1"
+        }
+      },
+      "status": "Not Approved",
+      "userId": "kwMHn07LP4WgRVuQ4OxKvqsREfZ2"
+    }
+  }
+}
