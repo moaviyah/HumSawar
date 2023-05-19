@@ -24,9 +24,28 @@ const PostedRides = ({ route }) => {
   const ridesRef = ref(database, 'rides');
   const ridesQuery = query(ridesRef);
   const newRideRef = push(ridesRef);
-  const newRequestKey = newRideRef.key;
+  const [isMale, setIsMale] = useState (true)
   // }, []);
 
+
+  useEffect(() => {
+    const id = authentication.currentUser.uid
+    const authRef = ref(database, `users/${id}`);
+    onValue(authRef, (snapshot) => {
+      const user = snapshot.val();
+      
+      if (user.gender !== 'male') {
+        setIsMale(true)
+        console.log('male')
+      }
+      else  {
+        setIsMale(false)
+        console.log('female')
+      }
+    });
+
+  }, []);
+  
   useEffect(() => {
     
 
@@ -40,9 +59,11 @@ const PostedRides = ({ route }) => {
         const rides = Object.values(trip);
         const filteredRides = Object.values(data)
           .filter((data) => {
+           
             // Distance between user's location and ride 'from' location (in kilometers)
             const distance = getDistanceFromLatLonInKm(fromLat, fromLng, data.fromLat, data.fromLng);
-            return distance < 10; // Only return rides within 1 km distance
+            return distance < 10 && (isMale ? data.pink === false : true);
+            
           });
         function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 
@@ -72,8 +93,11 @@ const PostedRides = ({ route }) => {
     };
   }, []);
 
-  const sendRequest = (rId, driverId, start, destination, date) => {
 
+  const sendRequest = (rId, driverId, start, destination, date) => {
+    const requestRef = ref(database, `users/${driverId}/requests`)
+    const newRequestRef = push(requestRef)
+    const requestId = newRequestRef.key
     const Data = {
       userRequesting: id,
       date: date,
@@ -84,13 +108,13 @@ const PostedRides = ({ route }) => {
       passengerName: authentication.currentUser.displayName,
       start: start, 
       destination: destination,
-      requestId: newRequestKey
+      requestId: requestId
     }
-    const requestRef = ref(database, `users/${driverId}/requests`)
-    const newRequestRef = push(requestRef)
+    
     set(newRequestRef, Data)
     console.log('sent')
   }
+
 
   const handleDecreaseSeats = () => {
     if (seats > 1) {
@@ -142,7 +166,7 @@ const PostedRides = ({ route }) => {
                         </TouchableOpacity>
                       </View>
 
-                      <TouchableOpacity style={styles.btn} onPress={()=>sendRequest(ride.rideId, ride.id, ride.to, ride.from, ride.date)}>
+                      <TouchableOpacity style={styles.btn} onPress={()=>sendRequest(ride.rideId, ride.id, ride.to, ride.from, ride.date, ride.pinkEnabled)}>
                         <Image source={require('../../assets/send.png')} style={{ height: 20, width: 20 }} />
                         <Text style={styles.btnTxt}>Request</Text>
                       </TouchableOpacity>

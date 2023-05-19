@@ -31,13 +31,13 @@ const Dashboard = ({ navigation }) => {
                )
             } 
             }/>
-            <Drawer.Screen name="Profile" component={Profile} 
+            {/* <Drawer.Screen name="Profile" component={Profile} 
             options={{
                 drawerIcon:()=>(
                  <Ionicons name='person-outline' size={22}  color={primary}/>
  
                 )
-             }}/> 
+             }}/>  */}
              <Drawer.Screen name='Current Rides' component={CurrentRides}options={{
                 drawerIcon:()=>(
                  <Ionicons name='person-outline' size={22}  color={primary}/>

@@ -12,7 +12,7 @@ const windowHeight = Dimensions.get('window').height;
 const CurrentRides = () => {
     const [currentRides, setCurrentRides] = useState();
     const userId = authentication.currentUser.uid;
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
         const database = getDatabase();
         const ridesRef = ref(database, 'currentRide');
@@ -22,13 +22,17 @@ const CurrentRides = () => {
           const ridesData = snapshot.val();
            
           if (ridesData) {
-            const filteredRides = Object.values(ridesData). filter((ride)=>ride.driverUid !== userId || ride.passengerUid !== userId)
-            console.log(filteredRides)
+            const filteredRides = Object.values(ridesData).filter((ride)=>ride.driverUid !== userId || ride.passengerUid !== userId)
+            console.log(ridesData)
             console.log(userId)
-            setCurrentRides(ridesData);
-            setIsLoading(false)
+            setCurrentRides(filteredRides);
+            console.log(currentRides)
+            setIsLoading(false);
+            console.log('success')
           } else {
             setCurrentRides([]);
+            setIsLoading(true);
+            console.log('error')
           }
         });
     
@@ -46,11 +50,11 @@ const CurrentRides = () => {
         :
         (
             <View style={styles.container}>
+                <Text style={styles.heading}>Current Rides</Text>
               {currentRides.map((ride) => (
                   <View>
-                      <Text style={styles.heading}>Current Rides</Text>
                       <View style={styles.ridesTab}>
-                          <Text></Text>
+                          <Text>{ride}</Text>
                       </View>
                   </View>
               ))}

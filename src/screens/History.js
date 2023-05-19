@@ -273,42 +273,7 @@ const HistoryScreen = () => {
   };
   return (
     <View style={styles.container}>
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tabButton, selectedTab === 'given' && styles.activeTabButton]}
-          onPress={() => handleTabPress('given')}
-        >
-          <Text style={[styles.tabButtonText, selectedTab === 'given' && styles.activeTabButtonText]}>Rides Given</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tabButton, selectedTab === 'taken' && styles.activeTabButton]}
-          onPress={() => handleTabPress('taken')}
-        >
-          <Text style={[styles.tabButtonText, selectedTab === 'taken' && styles.activeTabButtonText]}>Rides Taken</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.contentContainer}>
-        {selectedTab === 'given' && (
-          <View style={styles.ridesGivenContainer}>
-            <View style={styles.container}>
-              <Text style={styles.title}>Rides Given Screen</Text>
-              {/* Add your content here */}
-            </View>
-          </View>
-        )}
-        {selectedTab === 'taken' && (
-          <View style={styles.ridesTakenContainer}>
-            <View style={styles.container}>
-              <Text style={styles.title}>Rides Taken Screen</Text>
-              <View style={styles.infoContainer}>
-                <Ionicons name="information-circle-outline" size={24} color="gray" />
-                <Text style={styles.infoText}>You haven't taken any rides yet</Text>
-              </View>
-              {/* Add your content here */}
-            </View>
-          </View>
-        )}
-      </View>
+
     </View>
   );
 };

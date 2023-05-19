@@ -188,9 +188,7 @@ updateProfile(user, {
             </TouchableOpacity>
           ))}
         </View>
-        <TouchableOpacity onPress={()=>navigation.navigate('Notifications')}>
-          <Image source={require('../../assets/notification-on.png')} style={{ height: 25, width: 25, alignSelf:'center', marginTop:10, marginRight:7}} />
-        </TouchableOpacity >
+        
 
       </View>
       <View>

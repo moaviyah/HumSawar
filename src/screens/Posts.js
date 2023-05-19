@@ -60,7 +60,13 @@ const Posts = () => {
   return (
     <View>
       <View>
-      <Text style={styles.label}>Publish Ride</Text>
+        <View style={{flexDirection:'row', justifyContent:'space-between', paddingHorizontal:10}}>
+        <Text style={styles.label}>Publish Ride</Text>
+        <TouchableOpacity onPress={()=>navigation.navigate('Notifications')}>
+          <Image source={require('../../assets/notification-on.png')} style={{ height: 25, width: 25, alignSelf:'center', marginTop:10, marginRight:7}} />
+        </TouchableOpacity >
+        </View>
+      
       <TouchableOpacity style={styles.tab} onPress={toRegistration}>
       <View style={styles.tabContent}>
         <Image source={require('../../assets/carpool.png')} style={{height:35, width:35}}/>
@@ -118,9 +124,6 @@ const Posts = () => {
         ))}
         
       </ScrollView>
-      <View style={{alignSelf:'flex-end', margin:20, backgroundColor:'#fff' ,borderRadius:20, padding:10, justifyContent:'center', marginTop:windowWidth*0.3}}>
-          <Image source={require('../../assets/new-message.png')} style={{width:50, height:50, alignSelf:'center'}}/>
-      </View>
     </View>
   )
 }

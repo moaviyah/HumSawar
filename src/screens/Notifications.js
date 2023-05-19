@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity, Button, Dimensions, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Button, Dimensions, Image, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import {  authentication, database } from '../config/firebase'
-import { getDatabase, ref, query, orderByChild, equalTo, onValue, off, orderByValue, orderByKey, set, push, remove  } from "firebase/database";
+import { getDatabase, ref, query, orderByChild, equalTo, onValue, off, orderByValue, orderByKey, set, push, remove, update  } from "firebase/database";
 import { primary } from '../theme/Theme';
 
 
@@ -11,9 +11,9 @@ const windowHeight = Dimensions.get('window').height;
 const Notifications = ({navigation}) => {
   const [rideRequests, setRideRequests] = useState([]);
   const [loading, setLoading] = useState(true)
-
+  const userId = authentication.currentUser.uid
   useEffect(() => {
-    const userId = authentication.currentUser.uid
+    
     const requestRef = ref(database, `users/${userId}/requests`)
     
     onValue(requestRef, (snapshot)=>{
@@ -31,7 +31,7 @@ const Notifications = ({navigation}) => {
     })
   }, []);
   const currentRideRef = ref(database, "/currentRide");
-  const acceptRequest = (requestId, passengerName, passengerUid, driverUid) => {
+  const acceptRequest = (requestId, passengerName, passengerUid, driverUid, rideId, Seats) => {
     const request = rideRequests.find((request) => request.requestId === requestId);
     const { userRequesting } = request;
 
@@ -48,7 +48,23 @@ const Notifications = ({navigation}) => {
       time: formattedTime
     })
     console.log('request accepted')
+    const acceptRef = ref(database, `users/${userId}/requests/${requestId}`)
+    update(acceptRef, {
+      accepted: 1
+    })
+    Alert.alert('Request Accepted')
+    // const updatedAvailableSeats = Seats - 1;
+    // const rideRef = ref (database,`rides/${rideId}`)
+    // update(rideRef,{
+    //   availableSeats: updatedAvailableSeats
+    // })
   };
+  const declineRequest =(requestId)=>{
+    const declineRef = ref(database, `users/${userId}/requests/${requestId}`)
+    update(declineRef, {
+      declined: 1
+    })
+  }
 
   const handleAccept = (rideRequestId) => {
     // Handle accept button click
@@ -80,7 +96,7 @@ const Notifications = ({navigation}) => {
           
           <View style={styles.buttonContainer}>
             
-            <TouchableOpacity onPress={()=>acceptRequest(request.requestId, request.passengerName, request.userRequesting, request.driverId)} style={styles.btn}>
+            <TouchableOpacity onPress={()=>acceptRequest(request.requestId, request.passengerName, request.userRequesting, request.driverId, request.rideId, request.availableSeats)} style={styles.btn}>
               <Image source={require('../../assets/check.png')} style={{height:15, width:15, alignSelf:'center'}}/>
               <Text style={styles.acceptBtnTxt}>
                 Accept
